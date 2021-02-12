@@ -1,0 +1,13 @@
+C:\Users\laibr\source\repos\MP3_G2\MP3\bin\Debug\netcoreapp3.1\MP3.exe
+C:\Users\laibr\source\repos\MP3_G2\MP3\bin\Debug\netcoreapp3.1\MP3.deps.json
+C:\Users\laibr\source\repos\MP3_G2\MP3\bin\Debug\netcoreapp3.1\MP3.runtimeconfig.json
+C:\Users\laibr\source\repos\MP3_G2\MP3\bin\Debug\netcoreapp3.1\MP3.runtimeconfig.dev.json
+C:\Users\laibr\source\repos\MP3_G2\MP3\bin\Debug\netcoreapp3.1\MP3.dll
+C:\Users\laibr\source\repos\MP3_G2\MP3\bin\Debug\netcoreapp3.1\MP3.pdb
+C:\Users\laibr\source\repos\MP3_G2\MP3\obj\Debug\netcoreapp3.1\MP3.csprojAssemblyReference.cache
+C:\Users\laibr\source\repos\MP3_G2\MP3\obj\Debug\netcoreapp3.1\MP3.AssemblyInfoInputs.cache
+C:\Users\laibr\source\repos\MP3_G2\MP3\obj\Debug\netcoreapp3.1\MP3.AssemblyInfo.cs
+C:\Users\laibr\source\repos\MP3_G2\MP3\obj\Debug\netcoreapp3.1\MP3.csproj.CoreCompileInputs.cache
+C:\Users\laibr\source\repos\MP3_G2\MP3\obj\Debug\netcoreapp3.1\MP3.dll
+C:\Users\laibr\source\repos\MP3_G2\MP3\obj\Debug\netcoreapp3.1\MP3.pdb
+C:\Users\laibr\source\repos\MP3_G2\MP3\obj\Debug\netcoreapp3.1\MP3.genruntimeconfig.cache
