@@ -1,0 +1,13 @@
+C:\Users\laibr\source\repos\CPEN223\MP2\bin\Debug\netcoreapp3.1\MP2.exe
+C:\Users\laibr\source\repos\CPEN223\MP2\bin\Debug\netcoreapp3.1\MP2.deps.json
+C:\Users\laibr\source\repos\CPEN223\MP2\bin\Debug\netcoreapp3.1\MP2.runtimeconfig.json
+C:\Users\laibr\source\repos\CPEN223\MP2\bin\Debug\netcoreapp3.1\MP2.runtimeconfig.dev.json
+C:\Users\laibr\source\repos\CPEN223\MP2\bin\Debug\netcoreapp3.1\MP2.dll
+C:\Users\laibr\source\repos\CPEN223\MP2\bin\Debug\netcoreapp3.1\MP2.pdb
+C:\Users\laibr\source\repos\CPEN223\MP2\obj\Debug\netcoreapp3.1\MP2.csprojAssemblyReference.cache
+C:\Users\laibr\source\repos\CPEN223\MP2\obj\Debug\netcoreapp3.1\MP2.AssemblyInfoInputs.cache
+C:\Users\laibr\source\repos\CPEN223\MP2\obj\Debug\netcoreapp3.1\MP2.AssemblyInfo.cs
+C:\Users\laibr\source\repos\CPEN223\MP2\obj\Debug\netcoreapp3.1\MP2.csproj.CoreCompileInputs.cache
+C:\Users\laibr\source\repos\CPEN223\MP2\obj\Debug\netcoreapp3.1\MP2.dll
+C:\Users\laibr\source\repos\CPEN223\MP2\obj\Debug\netcoreapp3.1\MP2.pdb
+C:\Users\laibr\source\repos\CPEN223\MP2\obj\Debug\netcoreapp3.1\MP2.genruntimeconfig.cache
