@@ -33,22 +33,20 @@ def playerNextMove() -> None:
     """
     playerMove = True
     while playerMove:
-        move = input("Next move for X (state a valid cell num): ")
+        try:
+            move = int(input("Next move for X (state a valid cell num): "))
 
-        if len(move) != 1:
+            if move < 0 or move > 8 or move in played:
+                print("Must enter a valid cell number")
+            else:
+                print(f"You chose cell {move}")
+                board[move] = "X"
+                played.add(move)
+                playerMove = False
+        except:
             print("Must be an integer")
-        
-        move = int(move)
-        if move < 0 or move > 8:
-            print("Must enter a valid cell number")
-        elif board[move] != " ":
-            print("Must enter an empty cell")
-        else:
-            print(f"You chose cell {move}")
-            board[move] = "X"
-            playerMove = False
 
-        printBoard()
+    printBoard()
     
 def computerNextMove() -> None:
     """ Computer randomly chooses a valid cell, 
@@ -57,9 +55,10 @@ def computerNextMove() -> None:
     compMove = True
     while compMove:
         move = random.randint(0,8)
-        if board[move] == " ":
+        if move not in played:
             print(f"Computer chose cell {move}")
             board[move] = "O"
+            played.add(move)
             compMove = False
 
     printBoard()
@@ -105,13 +104,13 @@ def terminate(who: str) -> bool:
         
         return True
 
-    if " " not in board:
-        print("A Draw! Thanks for playing")     
+    # Check if draw (all cells are filled and no winner)
+    if len(played) == 9:
+        print("A Draw! Thanks for playing")
+        return True
 
     return False
 
-    
-    pass #To Implement
 
 if __name__ == "__main__":
     # Use as is. 
