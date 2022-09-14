@@ -19,11 +19,11 @@ def init() -> None:
 
 def printBoard() -> None:
     """ prints the board on the screen based on the values in the board list """
-    print(f"{board[0]} | {board[1]} | {board[2]}      0 | 1 | 2")
-    print("--+---+--      --+---+--")
-    print(f"{board[3]} | {board[4]} | {board[5]}      3 | 4 | 5")
-    print("--+---+--      --+---+--")
-    print(f"{board[6]} | {board[7]} | {board[8]}      6 | 7 | 8")
+    print(f"\n{board[0]} | {board[1]} | {board[2]}    0 | 1 | 2")
+    print("--+---+--    --+---+--")
+    print(f"{board[3]} | {board[4]} | {board[5]}    3 | 4 | 5")
+    print("--+---+--    --+---+--")
+    print(f"{board[6]} | {board[7]} | {board[8]}    6 | 7 | 8\n")
 
 
 def playerNextMove() -> None:
@@ -34,6 +34,7 @@ def playerNextMove() -> None:
     playerMove = True
     while playerMove:
         try:
+            # If input is not an integer an error is thrown when casting to int
             move = int(input("Next move for X (state a valid cell num): "))
 
             if move < 0 or move > 8 or move in played:
@@ -48,13 +49,14 @@ def playerNextMove() -> None:
 
     printBoard()
     
+
 def computerNextMove() -> None:
     """ Computer randomly chooses a valid cell, 
         and prints the info and the updated board 
     """
     compMove = True
     while compMove:
-        move = random.randint(0,8)
+        move = random.randint(0,8) # Gets random integer from 0 to 8 inclusive
         if move not in played:
             print(f"Computer chose cell {move}")
             board[move] = "O"
