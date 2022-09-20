@@ -83,6 +83,7 @@ class Rational:
             return "NaN"
 
         if self.numerator % self.denominator == 0:
+            # Return value as string formatted integer if is equivalent rational number (Remainder = 0)
             return f"{int(self.numerator / self.denominator)}"
 
         return f"{self.numerator}/{self.denominator}"        
