@@ -74,30 +74,13 @@ end
 
 % gets the maximum of 3 values without using matlab functions
 function val = max3(a, b, c)
-    if a == b & a == c
+    if a >=b && a >=c
         val = a;
-    elseif a == b & a ~=c
-        if a > c
-            val = a;
-        else
-            val = c;
-        end
-    elseif a == c & a ~= b
-        if a > b
-            val = a;
-        else
-            val = b;
-        end
+    elseif b >= a && b >= c
+        val = b;
     else
-        if a > b & a > c
-            val = a;
-        elseif b > c
-            val = b;
-        else 
-            val = c;
-        end
+        val = c;
     end
-          
 end
 
 
