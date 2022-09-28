@@ -1,5 +1,5 @@
-# student name: Brendan Lai
-#student number: 19241173
+# Student name: Brendan Lai
+# Student number: 19241173
 
 def checkColumn(puzzle: list, column: int):
     """ 
@@ -11,16 +11,17 @@ def checkColumn(puzzle: list, column: int):
         
         As usual, this function must not mutate puzzle 
     """
-    vals = set()
+    colSet = set()
 
-    for x in puzzle:
-        if x[col] in vals:
-            print("This column is not valid")
+    for row in puzzle:
+        val = row[column] # get val from specific col in row
+        if val in colSet:
+            print(f"Column {column} not valid")
             return # Exit the method if subgrid is invalid
 
-        vals.add(x[col])
+        colSet.add(column)
 
-    print("This column is valid")
+    print(f"Column {column} valid")
         
 
 def checkRow(puzzle: list, row: int):
@@ -33,15 +34,15 @@ def checkRow(puzzle: list, row: int):
         
         As usual, this function must not mutate puzzle 
     """
-    vals = set()
+    rowSet = set()
 
     for x in puzzle[row]:
-        if x in vals:
-            print("This row is not valid")
+        if x in rowSet:
+            print(f"Row {row} not valid")
             return # Exit the method if subgrid is invalid
-        vals.add(x)
+        rowSet.add(x)
 
-    print("This row is valid")
+    print(f"Row {row} valid")
 
 
 def checkSubgrid(puzzle: list, subgrid: int):
@@ -58,20 +59,20 @@ def checkSubgrid(puzzle: list, subgrid: int):
         
         As usual, this function must not mutate puzzle 
     """
-    col = (subgrid % 3) * 3 # Calculate col as 0 or 1 or 2
-    row = (subgrid // 3) * 3 # Calculate row as 0 or 1 or 2
+    rowStart = (subgrid // 3) * 3 # Calculate row as 0 or 3 or 6
+    colStart = (subgrid % 3) * 3 # Calculate col as 0 or 3 or 6
 
     subgridSet = set()
 
-    for x in puzzle[row: row + 3]: # get the 3 rows of the subgrid
-        for y in x[col: col + 3]: # get vals from these rows for cols in subgrid
-            if y in subgridSet:
-                print("This subgrid is not valid")
+    for row in puzzle[rowStart: rowStart + 3]: # get the 3 rows of the subgrid
+        for x in row[colStart: colStart + 3]: # get vals from rows for cols in subgrid
+            if x in subgridSet:
+                print(f"Subgrid {subgrid} not valid")
                 return # Exit the method if subgrid is invalid
 
-            subgridSet.add(y)
+            subgridSet.add(x)
 
-    print("This subgrid is valid")
+    print(f"Subgrid {subgrid} valid")
 
 if __name__ == "__main__":
     test1 = [ [6, 2, 4, 5, 3, 9, 1, 8, 7],
