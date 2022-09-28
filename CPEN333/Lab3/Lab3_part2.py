@@ -21,7 +21,7 @@ def checkColumn(puzzle: list, column: int):
             print(f"Column {column} not valid")
             return # Exit the method if subgrid is invalid
 
-        colSet.add(column)
+        colSet.add(val)
 
     print(f"Column {column} valid")
         
