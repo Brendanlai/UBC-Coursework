@@ -87,8 +87,8 @@ def hasWon(who: str) -> bool:
         return True
     elif board[6] == who and board[4] == who and board[2] == who:
         return True
-    else:
-        return False
+    
+    return False
 
 
 def terminate(who: str) -> bool:
