@@ -1,4 +1,4 @@
-function [x, iters, errs] = hybrid(f, dfdx, xmin, xmax, tol1, tol2, zero)
+function x = hybrid(f, dfdx, xmin, xmax, tol1, tol2)
 % Hybrid algorithm implementing bisection and newton's method to calculate
 % roots
 % Input Arguments:
@@ -17,18 +17,20 @@ function [x, iters, errs] = hybrid(f, dfdx, xmin, xmax, tol1, tol2, zero)
     % Continuously compute new midpoints until we have converged on a root 
     while abs(f(midpoint)) > tol1 
         if f(midpoint)*f(a) < 0
-            b = midpoint
+            b = midpoint;
         else
-            a = midpoint
+            a = midpoint;
         end
-        midpoint = (a + b) / 2
+        midpoint = (a + b) / 2;
     end
 
-    xn = midpoint % estimate from bisection method
-    err = 1
-    i = 1
+    xn = midpoint; % estimate from bisection method
+    err = 1;
+    i = 1;
     
     % Newton's method
+    % Implement formula while error is less than tolerance and less than 50
+    % iterations have been completed.
     while err > tol2 && i <= 50
         xnp1 = xn - f(xn)/dfdx(xn);
         err = abs(xnp1 - xn);
@@ -36,9 +38,5 @@ function [x, iters, errs] = hybrid(f, dfdx, xmin, xmax, tol1, tol2, zero)
         i = i + 1;
     end
 
-    iters = i
-    errs = err
-    x = xnp1
-
+    x = xnp1; % Final root estimate
 end
-
