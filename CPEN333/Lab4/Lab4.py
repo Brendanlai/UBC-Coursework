@@ -46,13 +46,11 @@ def sortingWorker(firstHalf: bool) -> None:
         return arr
 
     halfTestcaseLen = len(testcase) // 2
-    global sortedFirstHalf
-    global sortedSecondHalf
 
     if firstHalf:
-        sortedFirstHalf = sortImplementation(testcase[0:halfTestcaseLen])
+        sortedFirstHalf.extend(sortImplementation(testcase[:halfTestcaseLen]))
     else:
-        sortedSecondHalf = sortImplementation(testcase[halfTestcaseLen: halfTestcaseLen * 2])
+        sortedSecondHalf.extend((testcase[halfTestcaseLen:]))
 
     
 
@@ -62,7 +60,6 @@ def mergingWorker() -> None:
         them into a single sorted list that is stored in
         the shared variable sortedFullList.
     """
-    global SortedFullList
 
     i, j = 0, 0
     n = len(testcase) / 2
@@ -76,17 +73,20 @@ def mergingWorker() -> None:
             j += 1
 
     # Once either first or second half list is completed append the remaining sorted half array to end
-    SortedFullList = SortedFullList + sortedFirstHalf[i:] + sortedSecondHalf[j:]
+    if i == n:
+        SortedFullList.extend(sortedSecondHalf[j:])
+    else:
+        SortedFullList.extend(sortedFirstHalf[i:])
 
 
 if __name__ == "__main__":
-    #shared variables
-    testcase = [8,-1,-5,7,3,4,1,3,2,8,-10, -33, 20, 30]
+    # shared variables
+    testcase = [8,-1,-5,7,3,4,1,3,2,8,-10,-33,20,30]
     sortedFirstHalf: list = []
     sortedSecondHalf: list = []
     SortedFullList: list = []
     
-    #to implement the rest of the code below, as specified
+    # Complete the first and second half sorting threads
     t1 = threading.Thread(target=sortingWorker, kwargs={"firstHalf": True,})
     t2 = threading.Thread(target=sortingWorker, kwargs={"firstHalf": False,})
     t1.start()
@@ -94,6 +94,7 @@ if __name__ == "__main__":
     t1.join()
     t2.join()
 
+    # Complete the merging thread once sorting threads have completed
     t3 = threading.Thread(target=mergingWorker)
     t3.start()
     t3.join()
