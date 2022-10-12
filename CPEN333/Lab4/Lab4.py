@@ -62,24 +62,26 @@ def mergingWorker() -> None:
         them into a single sorted list that is stored in
         the shared variable sortedFullList.
     """
-    index = 0
-    firstHalfIndex = 0
-    secondHalfIndex = 0
     global SortedFullList
 
-    while len(SortedFullList) != len(testcase) - 1:
-        if sortedFirstHalf[firstHalfIndex] > sortedSecondHalf[secondHalfIndex]:
-            SortedFullList.append(sortedSecondHalf[secondHalfIndex])
-            secondHalfIndex += 1
+    i, j = 0, 0
+    n = len(testcase) / 2
+    
+    while i < n and j < n:
+        if sortedFirstHalf[i] < sortedSecondHalf[j]:
+            SortedFullList.append(sortedFirstHalf[i])
+            i += 1
         else:
-            SortedFullList.append(sortedFirstHalf[firstHalfIndex])
-            firstHalfIndex += 1
-        index += 1
+            SortedFullList.append(sortedSecondHalf[j])
+            j += 1
+
+    # Once either first or second half list is completed append the remaining sorted half array to end
+    SortedFullList = SortedFullList + sortedFirstHalf[i:] + sortedSecondHalf[j:]
 
 
 if __name__ == "__main__":
     #shared variables
-    testcase = [8,-5,7,3,4,1,3,2,8,-10]
+    testcase = [8,-1,-5,7,3,4,1,3,2,8,-10, -33, 20, 30]
     sortedFirstHalf: list = []
     sortedSecondHalf: list = []
     SortedFullList: list = []
@@ -87,12 +89,12 @@ if __name__ == "__main__":
     #to implement the rest of the code below, as specified
     t1 = threading.Thread(target=sortingWorker, kwargs={"firstHalf": True,})
     t2 = threading.Thread(target=sortingWorker, kwargs={"firstHalf": False,})
-    t3 = threading.Thread(target=mergingWorker)
     t1.start()
     t2.start()
     t1.join()
     t2.join()
 
+    t3 = threading.Thread(target=mergingWorker)
     t3.start()
     t3.join()
 
