@@ -1,7 +1,8 @@
-#student name: Brendan Lai
-#student number: 19241173
+# student name: Brendan Lai
+# student number: 19241173
 
 import threading
+
 
 def sortingWorker(firstHalf: bool) -> None:
     """
@@ -25,17 +26,17 @@ def sortingWorker(firstHalf: bool) -> None:
         n = len(arr)
 
         # Iterate over whole array
-        for i in range(len(arr)):
+        for i in range(n):
             # If there was no swap in an iteration then array has been sorted
-            isSorted = True 
-            
-            # look at the list one by one comparing adjacent values
+            isSorted = True
+
+            # look at the list 1 by 1 comparing adjacent values
             for j in range(n - i - 1):
 
                 # If the current item is greater than adjacent (right sided next item)
-                if arr[j] > arr[j+1]:
-                    arr[j], arr[j+1] = arr[j + 1], arr[j] # Then swap the two elements
-                    isSorted = False # Swap occurred therefore algorithm incomplete
+                if arr[j] > arr[j + 1]:
+                    arr[j], arr[j + 1] = arr[j + 1], arr[j]  # swap elements
+                    isSorted = False  # Swap occurred therefore algorithm incomplete
 
             # If no swap has occurred then list has been completely sorted
             if isSorted:
@@ -43,12 +44,13 @@ def sortingWorker(firstHalf: bool) -> None:
 
         return arr
 
+    # Compute the halfway point for testcase partition
     halfwayPt = len(testcase) // 2
 
     if firstHalf:
         sortedFirstHalf.extend(sortImplementation(testcase[:halfwayPt]))
     else:
-        sortedSecondHalf.extend((testcase[halfwayPt:]))
+        sortedSecondHalf.extend(sortImplementation(testcase[halfwayPt:]))
 
 
 def mergingWorker() -> None:
@@ -58,12 +60,12 @@ def mergingWorker() -> None:
         the shared variable sortedFullList.
     """
 
-    i, j = 0, 0 # Pointers for first and second half sorted arrays
+    i, j = 0, 0  # Pointers for first and second half sorted arrays
     n = len(testcase) / 2 # Each half array is length equivalent to half test case
-    
+
     # loop until one of the half arrays are completely added to fully sorted
     while i < n and j < n:
-        # Check if append whichever item is less from corresponding arrays and increment accordingly
+        # Append whichever item is less from corresponding arrays and increment accordingly
         if sortedFirstHalf[i] < sortedSecondHalf[j]:
             SortedFullList.append(sortedFirstHalf[i])
             i += 1
@@ -77,16 +79,17 @@ def mergingWorker() -> None:
     else:
         SortedFullList.extend(sortedFirstHalf[i:])
 
+
 if __name__ == "__main__":
     # shared variables
-    testcase = [8,-1,-5,7,3,4,1,3,2,8,-10,-33,20,30]
+    testcase = [8, -1, -5, 7, 3, 4, 1, 3, 2, 8, -10, -33, 20, 30]
     sortedFirstHalf: list = []
     sortedSecondHalf: list = []
     SortedFullList: list = []
-    
+
     # start and complete the first and second half sorting threads
-    t1 = threading.Thread(target=sortingWorker, kwargs={"firstHalf": True,})
-    t2 = threading.Thread(target=sortingWorker, kwargs={"firstHalf": False,})
+    t1 = threading.Thread(target=sortingWorker, kwargs={"firstHalf": True, })
+    t2 = threading.Thread(target=sortingWorker, kwargs={"firstHalf": False, })
     t1.start()
     t2.start()
     t1.join()
@@ -97,5 +100,5 @@ if __name__ == "__main__":
     t3.start()
     t3.join()
 
-    #as a simple test, printing the final sorted list
+    # as a simple test, printing the final sorted list
     print("The final sorted list is ", SortedFullList)
