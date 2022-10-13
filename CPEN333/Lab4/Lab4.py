@@ -83,22 +83,23 @@ def mergingWorker() -> None:
 if __name__ == "__main__":
     # shared variables
     testcase = [8, -1, -5, 7, 3, 4, 1, 3, 2, 8, -10, -33, 20, 30]
+    testcase1 = []
     sortedFirstHalf: list = []
     sortedSecondHalf: list = []
     SortedFullList: list = []
 
     # start and complete the first and second half sorting threads
-    t1 = threading.Thread(target=sortingWorker, kwargs={"firstHalf": True, })
-    t2 = threading.Thread(target=sortingWorker, kwargs={"firstHalf": False, })
-    t1.start()
-    t2.start()
-    t1.join()
-    t2.join()
+    firstHalfThread = threading.Thread(target=sortingWorker, kwargs={"firstHalf": True, })
+    secondHalfThread = threading.Thread(target=sortingWorker, kwargs={"firstHalf": False, })
+    firstHalfThread.start()
+    secondHalfThread.start()
+    firstHalfThread.join()
+    secondHalfThread.join()
 
     # Complete the merging thread once sorting threads have completed
-    t3 = threading.Thread(target=mergingWorker)
-    t3.start()
-    t3.join()
+    mergeThread = threading.Thread(target=mergingWorker)
+    mergeThread.start()
+    mergeThread.join()
 
     # as a simple test, printing the final sorted list
     print("The final sorted list is ", SortedFullList)
