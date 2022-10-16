@@ -1,6 +1,8 @@
-nc = 2;
-tmax = 100;
-level = 8;
+format long
+
+nc = 60;
+tmax = 500;
+level = 12;
 gamma = 1;
 epsec = 10^-5;
 
@@ -18,7 +20,8 @@ end
 
 [t, r, v, v_ec] = charges(r0, tmax, level, gamma, epsec);
 
-fprintf("Potential Vector:")
-disp(v)
-
-charges_plot(t,r, 0)
+% fprintf("Potential Vector:")
+% disp(v)
+fprintf("equivalenc class vector")
+disp(v_ec)
+% charges_plot(t,r, 0)

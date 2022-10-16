@@ -37,7 +37,7 @@ function [t, r, v, v_ec] = charges(r0, tmax, level, gamma, epsec)
     
     for ts = 2: nt - 1
 
-        summation = zeros(nc, 3);
+        summation = zeros(nc, 3);        
         % Summation
         for i = 1: nc
             for j = 1: nc
@@ -50,19 +50,13 @@ function [t, r, v, v_ec] = charges(r0, tmax, level, gamma, epsec)
     
             end
         end
-        fprintf("Summation")
-        disp(summation)
-        disp(r(:,:,ts))
 
         % Compute FDA - Breakdown terms for simplicity 
-        b = r(:, :, ts);
-        c = r(:, :, ts - 1);
-        
         divisor = (2 * dt + gamma * dt^2)^-1;
  
-        term1 = 2 * dt * (2 * b - c);
+        term1 = 2 * dt * (2 * r(:, :, ts) - r(:, :, ts - 1));
         term2 = - dt^3 * 2 * summation;
-        term3 = gamma * dt^2 * c;
+        term3 = gamma * dt^2 * r(:, :, ts - 1);
         r(:, :, ts + 1) = divisor * (term1 + term2 + term3);
       
         % Normalize the postion of the charges
@@ -79,8 +73,7 @@ function [t, r, v, v_ec] = charges(r0, tmax, level, gamma, epsec)
                 potential = potential + 1 / sqrt(vec(1)^2 + vec(2)^2 + vec(3)^2);
             end
         end
-        fprintf("Potential: ")
-        display(potential)
+
         v(ts + 1) = potential;
         
         % update t 
@@ -88,7 +81,44 @@ function [t, r, v, v_ec] = charges(r0, tmax, level, gamma, epsec)
 
     end
 
-    % Equivalence Class thing
-
+    % Equivalence Class 
     
+    dij = zeros(nc, nc);
+    % Compute dij matrix (all charge distances)
+    for i = 1: nc
+        for j = 1: nc % If looking at the same charge assign dummy 1 and skip
+            vec = r(j, :, end) - r(i, :, end);
+            dij(i,j) = sqrt(vec(1)^2 + vec(2)^2 + vec(3)^2);
+        end
+        dij(i,:) = sort(dij(i,:));
+    end
+
+    % computing 
+    count = 1;
+    index = 1;
+    v_ec = [];
+    indices = [];
+    i2 = 1;
+    
+    for i = 1: nc
+        if ismember(i, indices)
+            continue
+        end
+        for j = 1: nc
+            if i == j || ismember(j,indices)
+                continue
+            end
+            if abs(dij(i,:) - dij(j, :)) <= epsec
+                count = count + 1;
+                indices(i2) = j;
+                i2 = i2 + 1;
+            end
+        end
+        v_ec(index) = count;
+        index = index + 1;
+        count = 1;
+    end
+
+    v_ec = sort(v_ec,'descend');
+
 end
