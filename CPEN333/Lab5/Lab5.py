@@ -53,12 +53,9 @@ def producer() -> None:
         print(f"DEBUG: {item} produced")
 
         empty.acquire() # Acquire empty semaphore to verify enough space in buffer
-        mutex.acquire() # Acquire lock before inserting to buffer
 
-        try:
-            buffer.insert(item) 
-        finally:
-            mutex.release()
+        with mutex: #insert to buffer when mutex is acquired then release mutex by definition
+            buffer.insert(item)
 
         full.release() # Release the full semaphore upon completion as item count is incremented (by 1)
 
@@ -70,16 +67,12 @@ def consumer() -> None:
     for _ in range(SIZE * 2): #we just consume twice the buffer size for testing
         
         full.acquire() # Acquire full semaphore ensuring at least 1 item is in the buffer before moving on
-        mutex.acquire() # Acquire lock before removing the item from the buffer
 
-        try:
+        with mutex: # Acquire lock and then item gets removed item from buffer. mutex released by 
             item = buffer.remove()
-        finally:
-            mutex.release()
 
         empty.release() # Release the empty semaphore as number of items has decremented (by 1)
 
-        #end of your implementation for this function
         #use the following code as is
         def waitForItemToBeConsumed(item) -> None: #inner function; use as is
             time.sleep(round(random.uniform(.1, .3), 2)) #a random delay (100 to 300 ms)
@@ -98,11 +91,11 @@ if __name__ == "__main__":
     mutex = threading.Lock()  #lock for protecting data on insertion or removal
     
     # Producer-consumer threads created, started, and completed below
-    t1 = threading.Thread(target=producer) # Producer Thread
-    t2 = threading.Thread(target=consumer) # Consumer Thread
+    producerThread = threading.Thread(target=producer)
+    consumerThread = threading.Thread(target=consumer)
 
-    t1.start()
-    t2.start()
+    producerThread.start()
+    consumerThread.start()
 
-    t1.join()
-    t2.join()
+    producerThread.join()
+    consumerThread.join()
