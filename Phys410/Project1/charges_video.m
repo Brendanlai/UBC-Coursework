@@ -1,4 +1,4 @@
-function charges_video(t, r, filename)
+function charges_video(t, r)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % charges_video(t, r) plots charge positions and makes an 
 % AVI video file named 'charges.avi'.
