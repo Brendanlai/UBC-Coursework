@@ -1,0 +1,392 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2634
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 \\documentclass\{article\}\
+\\usepackage[utf8]\{inputenc\}\
+\\usepackage\{graphicx\}\
+\\usepackage[a4paper, total=\{6in, 9in\}]\{geometry\}\
+\\usepackage\{amsmath\}\
+\\usepackage\{steinmetz\}\
+\\usepackage\{booktabs\}\
+\\usepackage\{datatool\}\
+\\graphicspath\{ \{./images/\} \}\
+ \
+\\title\{PHYS410 - Project 1\}\
+\\author\{Name: Brendan Lai, Student Number: 19241173\}\
+\\date\{Due: October 17, 2022\}\
+  \
+\\begin\{document\}\
+  \
+\\maketitle\
+  \
+\\tableofcontents\
+\
+\\section\{Project Objective\}\
+This project investigates the behaviour charges confined the surface of a unit sphere - specifically, the equilibrium configurations of N identical charges. This was accomplished by implementing finite difference methods for the full equations of motion. Alongside completing convergence testing and creating videos, the main target of the project was to accurately determine the equilibrium positions, the sphere's total potential energy, and the charges geometrical symmetry.\
+\
+\\section\{Theory\}\
+\
+\\subsection\{Physics Background On The Problem\}\
+The problem we are investigating refers to a series of N identical point charges of which we set both the charges and masses to be equal to 1 for simplicity.\\\\\
+\\\\Definitions:\
+\\begin\{itemize\}\
+    \\item A charges position is defined to be: $$ \\vec\{r_i\}(t)=[x_i(t), y_i(t), z_i(t)], \\qquad i = 1, 2, ..., N $$\
+    \\item The magnitude of a vector (3-dimensional) is: $$|\\vec\{r\}| = \\sqrt\{r_x^2 + r_y^2 + r_z^2\}$$\
+    \\item For the equations of motion we know that acceleration is the second derivative of position of time and velocity is the first derivation of the position of time. Thus: $$\\vec\{a_i\} = \\frac\{d^2\\vec\{r_i\}\}\{dt^2\}, \\qquad \\qquad \\vec\{v_i\} = \\frac\{d\\vec\{r_i\}\}\{dt\}$$\
+\\end\{itemize\}\
+\
+The equations of motion for the charges are given by:$$m_i\\vec\{a_i\} = m_i \\frac\{d^2\\vec\{r_i\}\}\{dt^2\} = -k_e * \\sum_\{j=1, i \\(\\neq j\}^\{N\}\\frac\{q_i q_j\}\{r_\{ij\}^2\} - \\gamma\\vec\{v\}_i \\qquad i = 1, 2, ..., N, \\qquad 0 \\le t \\le t_\{max\}$$\
+In these above equations $k_e$ is the Coulomb constant, $\\gamma$ is a parameter controlling the dissaptive force, and $t_\{max\}$ is the final time of the simulation. Further we can determine to let both the Coulomb constant and gamma to be 1 without loss of generality. As a result of these changes we get: $$\\frac\{d^2\\vec\{r_i\}\}\{dt^2\} = -\\sum_\{j=1, i \\(\\neq j\}^\{N\}\\frac\{\\vec\{r_\{ij\}\}\}\{r_\{ij\}^3\} - \\gamma\\frac\{d\\vec\{r_i\}\}\{dt\} \\qquad i = 1, 2, ..., N, \\qquad 0 \\le t \\le t_\{max\} \\qquad\\qquad (1)$$\
+\\\\\
+This equation (1) provides the premise of what was used to derive the finite difference approximation (FDA) describing our solution. Lastly, the total potential energy of the charges on the sphere was also measured. This was useful to compare the validity of the simulation given there are known values for a large set of configurations. Moreover, given our original equation of motion for the charges and taking $k_e = 1$ then we get that:$$V(t) = \\sum_\{i=2\}^N \\sum_\{j=1\}^\{i-1\} \\frac\{1\}\{r_\{ij\}\}$$\
+\\\\\
+Given this equation looking for the stable equilibrium position as t tends to infinity then v(t) will be either a local or global minimum. Whether this minimum is local or global is dependent on the initial conditions and the number of charges.\
+\\subsection\{Finite Difference Approximations (FDAs)\}\
+Finite difference approximations include a few key steps for solving ODEs like (1) with discrete values such as $0, \\Delta t, 2\\Delta t, ...$.. \
+\\begin\{enumerate\}\
+  \\item The first is to "discretize the domain" meaning that we want to replace the continuous variable, time (t) in this problem, \
+  \\item Discretize the equations - Replace the derivations with FDAs\
+  \\item Solve the equations algebraically for approximate solution values. In this case a recursive equation explicitly solving the next step value based on previous values.\
+\\end\{enumerate\}\
+Given the target of second order accuracy, $O(\\Delta t^2)$ FDAs the following expresses the derivations for the associated first derivative and second derivative FDAs.\\\\\
+\\\\\
+Beginning with the Taylor Series approximation for $h  = \\Delta t$\\\\\
+First order forward approximation for $f'(t)$\
+\\begin\{align*\}\
+    f(t + \\Delta t) &= f(t) + \\Delta t f'(t) + \\frac\{\\Delta t^2\}\{2\}f''(t) + \\frac\{\\Delta t^3\}\{6\} f'''(t) + O(\\Delta t^4)\\\\\
+    \\frac\{f(t + \\Delta t) - f(t)\}\{\\Delta t\} &= f'(t) + \\frac\{\\Delta t^2\}\{2\} f''(t) + O(\\Delta t^2)\\\\\
+    &= f'(x) + O(\\Delta x)\
+\\end\{align*\}\
+\\\\\
+Next looking at first order backward approximation for $f'(t)$\
+\\\\\
+\\begin\{align*\}\
+    f(t - \\Delta t) &= f(t) - \\Delta t f'(t) + \\frac\{\\Delta t^2\}\{2\}f''(t) - \\frac\{\\Delta t^3\}\{6\} f'''(t) + O(\\Delta t^4)\\\\\
+    \\frac\{f(t) - f(t - \\Delta t) \}\{\\Delta t\} &= f'(t) - \\frac\{\\Delta t^2\}\{2\} f''(t) + O(\\Delta t^2)\\\\\
+    &= f'(x) + O(\\Delta x)\
+\\end\{align*\}\
+\\\\\
+Now with our aim to derive a second order accuracy we then take the centered approximation for $f'(t)$ found by averaging the forward and backward first order approximation for $f'(t)$. We see:\
+\\\\\
+\\begin\{align*\}\
+    \\frac\{1\}\{2\}(\\frac\{f(t + \\Delta t) - f(t)\}\{\\Delta t)\} + \\frac\{f(t) - f(t - \\Delta t\}\{\\Delta t)\}) &= \\frac\{f(t + \\Delta t) - f(t - \\Delta t)\}\{2 \\Delta t\}\
+\\end\{align*\}\
+\\\\\
+Further subtracting the first order backward approximation from the fist order approximation we see that the even degree terms cancel each other out leaving us with:\
+\\\\\
+\\begin\{align*\}\
+    f(t + \\Delta t)  - f(t - \\Delta t) &= 2 \\Delta t f'(t) + \\frac\{\\Delta t^3\}\{6\}f'''(t) + O(\\Delta t^4)\\\\\
+    \\frac\{f(t + \\Delta t)  - f(t - \\Delta t)\}\{2 \\Delta t\} &= f'(t) + \\frac\{\\Delta t^2\}\{6\}f'''(t) + O(\\delta t^ 4)\\\\\
+    \\frac\{f(t + \\Delta t)  - f(t - \\Delta t)\}\{2 \\Delta t\} &= f'(t) + O(\\Delta t^2)\\\\\
+    f'(t) &= \\frac\{f(t + \\Delta t)  - f(t - \\Delta t)\}\{2 \\Delta t\} \\qquad \\qquad \\qquad (2)\
+\\end\{align*\}\
+\\\\\
+With this equation we now have our second order accurate FDA for the first derivative. Next we will go about deriving the second order accurate FDA for the second derivative. \\\\\
+\\\\\
+For this we will refer to the forward, backward, and at f(t). In this derivation we assume that a linear combination of truncated Taylor Series will give the formula. Implementing the method of undetermined coefficients we get that $\\alpha f_\{j-1\} + \\beta f_j + \\gamma f_\{j+1\} = f\'92\'92(x_j) + \'85$ where alpha, beta, and gamma are the undetermined coefficients. The following describe the Taylor series expansions for f at $h = -\\Delta t, \\quad  h = 0, \\quad h = +\\Delta t$. Further we get:\
+\\\\\
+\\begin\{align*\}\
+    f_\{j-1\} &= f(t + \\Delta t) = f(t) - \\Delta t f'(t) + \\frac\{\\Delta t^2\}\{2\}f''(t) - \\frac\{\\Delta t^3\}\{6\} f'''(t) + \\frac\{\\Delta t^4\}\{24\} f^\{(4)\}(t) + O(\\Delta t^5)\\\\\
+    f_j &= f(t) \\\\\
+    f_\{j+1\} &= f(t + \\Delta t) = f(t) + \\Delta t f'(t) + \\frac\{\\Delta t^2\}\{2\}f''(t) + \\frac\{\\Delta t^3\}\{6\} f'''(t) + \\frac\{\\Delta t^4\}\{24\} f^\{(4)\}(t) + O(\\Delta t^5)\
+\\end\{align*\}\
+\\\\\
+Further, with knowing that we want to eliminate the f(t) terms, the order $\\Delta t$ terms, and the $\\O(\\delta t^2)$ terms from these systems of equations we can derive the following system of equations for our undetermined coefficients:\
+\\begin\{align*\}\
+    \\alpha + \\beta + \\gamma &= 0\\\\\
+    - \\alpha + \\gamma &= 0\\\\\
+    \\frac\{\\delta t^2\}\{2\} * (\\alpha + \\gamma) &= 1\
+\\end\{align*\}\
+\\\\\
+Solving this system of equations we get the following: $$\\alpha = \\Delta t^\{-2\}, \\qquad \\beta = \\frac\{1\}\{2\\Delta t^2\}, \\qquad \\gamma = \\frac\{1\}\{\\Delta t^2\}$$\
+Lastly, plugging this into our original formula with the undetermined coefficients we get the solution for the centred 2nd order FDA approximating the 2nd derivative:\
+\\begin\{align*\}\
+     f\'92\'92(x_j) &= \\alpha f_\{j-1\} + \\beta f_j + \\gamma f_\{j+1\}\\\\\
+     f\'92\'92(x_j) &= \\frac\{1\}\{\\Delta t^2\}f_\{j-1\} + \\frac\{1\}\{2\\Delta t^2\} f_j + \\frac\{1\}\{\\Delta t^2\} f_\{j+1\}\\\\ \\\\\
+     f\'92\'92(x_j) &= \\frac\{f_\{j+1\} - 2f_j + f_\{j-1\}\}\{\\Delta t^2\} \\qquad \\qquad \\qquad (3)   \
+\\end\{align*\}\\\\\
+\
+\\subsection\{Implementing the FDA\}\
+Firstly, some variables which must be defined to make sense of our FDAs are:\\\\\
+\\begin\{itemize\}\\\\\
+    \\item $n_t = 2^l + 1$ where $n_t$ is the number of time steps and l is the level \
+    \\item $\\Delta t = \\frac\{t\{max\}\}\{n_t - 1\}$\
+    \\item $t^n = (n-1)\\Delta t \\qquad\\qquad n = 1,2,...,n$\
+\\end\{itemize\}\\\\\
+\\\\\
+Next, to implement these FDAs derived in 2.2 we can add these into the equations of motions as shown below.\\\\\
+\\\\\
+Referencing equations (1), (2), and (3) we can know substituting the first and second order approximated FDAs into the equations of motion to then directly solve for a scheme describing $\\vec\{r\}_i^\{n+1\}$; the target of this exercise so we can understand the equilibrium behaviour of the charges. The substitutions gives the following derivation for $\\vec\{r\}_i^\{n+1\}$\\\\\
+\\begin\{align*\}\
+    \\frac\{r_i^\{n+1\} - 2r_i^n + r_i^\{n-1\}\}\{\\Delta t^2\} &= -\\sum_\{j=1, i \\(\\neq j\}^\{N\}\\frac\{\\vec\{r_\{ij\}\}\}\{r_\{ij\}^3\} - \\gamma \\frac\{r_i^\{n+1\} - r_i^\{n-1\}\}\{2 \\Delta t\}\\\\\
+    2\\Delta t (r_i^\{n+1\} - 2r_i^n + r_i^\{n-1\}) &= -2 \\Delta t^3 \\sum_\{j=1, i \\(\\neq j\}^\{N\} \\frac\{\\vec\{r_\{ij\}\}\}\{r_\{ij\}^3\} - \\gamma \\Delta t^2 (r_i^\{n+1\} - r_i^\{n-1\})\\\\\
+    r_i^\{n+1\} (2\\Delta t + \\gamma \\Delta t^2) &= 2 \\Delta t(2r_i^n - r_i^\{n-1\}) - \\Delta t^3 \\sum_\{j=1, i \\(\\neq j\}^\{N\} \\frac\{\\vec\{r_\{ij\}\}\}\{r_\{ij\}^3\} + \\gamma \\Delta t^2 r_i^\{n-1\})\\\\\
+    r_i^\{n+1\} &= \\frac\{1\}\{(2\\Delta t+ \\gamma \\Delta t^2)\}[2\\Delta t(2r_i^n - r_i^\{n-1\}) - \\Delta t^3 \\sum_\{j=1, i \\(\\neq j\}^\{N\} \\frac\{\\vec\{r_\{ij\}\}\}\{r_\{ij\}^3\} + \\gamma \\Delta t^2 r_i^\{n-1\})]\
+\\end\{align*\}\
+\\\\\
+With this finding the equation can be implemented into our code now such that we can calculate the proceeding positions for all the charges by following this recursive formula.\
+\\\\\
+One other important thing to note is that for each time step taken the charge positions must be normalized so that they remain along the unit sphere. Moreover, the below formula describes the method for normalizing the charge's position where the previously calculated charge is denoted $r_i^\{n+1\}$ and the new normalized charge $\\Tilde\{r\}_i^\{n+1\}$: $$\\Tilde\{r\}_i^\{n+1\} = \\frac\{[x_i^\{n+1\}, y_i^\{n+1\}, z_i^\{n+1\}]\}\{\\sqrt\{(x_i^\{n+1\})^2 + (y_i^\{n+1\})^2 + (z_i^\{n+1\})^2\}\}$$\
+\\\\\
+Lastly, as previously described initial conditions are required to compute FDAs. The approach for determining initial conditions was to assign random values for each charges coordinate ranging [-1,1] and then normalized given that these charges must lie on the unit sphere. Moreover, since we also require the 2nd step in this calculation for our FDA scheme then we let the $r_i^2 = r_i^1$. The 4-level convergence test discussed later investigates the accuracy of this estimation.\\\\\
+\
+\\subsection\{Equivalence Class of Charges\}\
+At equilibrium another form of analysis we can do is referring to the system's geometry. To do this we consider the pairwise distances between sets of charges at equilibrium. The distance between charges can be calculated by finding the subtracting their two vectors and computing the magnitude. We denote this as: $$d_\{ij\} = |\\vec\{r_j\} - \\vec\{r_i\}| \\qquad \\qquad i,j = 1, 2, ..., N$$\\\\Finding the magnitude of $d_\{ij\}$ gives the distance which is: $\\sqrt\{(d^\{ij\}_x)^2+(d^\{ij\}_y)^2+(d^\{ij\}_z)^2\}$\\\\\
+\\\\\
+Moreover, these pairwise distances from all the other charges creates an N x N array for us to store these distances. Each row in this array holds the distances from the other charges in a single array. To create these classes we would like to understand how many charges have equivalent distance sets from the other. As such we also sort each of these rows to build our classes to help ease our computation of these classes. We denote two charges are in the same class if: $$\\vec\{d_i\} = \\vec\{d_\{i'\}\}$$ Where $\\vec\{d_i\}$ represents a row in the N x N matrix storing all our distances ($d_\{ij\}$). Further, we consider the equality to be relevant so long as element-wise these two vectors are less than a tolerance $\\epsilon_\{ec\}$. $$|\\vec\{d_i\} = \\vec\{d_\{i'\}\}| \\leq \\epsilon_\{ec\}$$\
+\\\\\
+In summary, as per the project sheet we claim without proof that two charges are in the same equivalence class if they are indistinguishable from each other with regards to equilibrium configuration.\
+\
+\\section\{Implementation\}\
+With regards to implementation there are a few key variables to note in relation to the theory provided in section 2. \\\\\
+\\begin\{itemize\}\
+    \\item The charges throughout all the time steps are written to a there dimensional array "r". The first dimension is for each charge so its length is the same as the number of charges, the second dimension is the corresponding x,y,z coordinates (length 3), and the last dimension is used to store the data at each timestep.\
+    \\item The calculated potentials are stored in a vector "V"\
+    \\item The equivalence class at the end is stored to a vector v\\textunderscore ec \\\\\
+\\end\{itemize\}\
+The bulk of the computation is completed in the charges.m file holding the charges function which contains our simulation. The function also relies on the Potential.m helper function. In this case I would refer to the program for details on the implementation of the simulation. However, a brief step-by-step overview of the architecture is also provided below:\\\\\
+\\begin\{enumerate\}\
+    \\item Initialize the parameters (nc, r0, tmax, level, epsec)\
+    \\item Normalize r0\
+    \\item Run the charges funciton\
+    \\begin\{enumerate\}\
+        \\item Calculate $\\Delta t = \\frac\{tmax\}\{level^2\}, \\qquad and\\qquad nt = 2^\{level\} + 1$ \
+        \\item Set initial conditions for the three dimensional array r to be $r_1 = r_2 = r0$ and also calculate the potentials at the initial conditions storing to v\
+        \\item Next we iterate from two to nt - 1 (increment by 1) and dot he following for each iteration\
+        \\item Compute the summation function, compute the values for the next timestep with using the result from the summation, normalize the charge positions at this time step, and finally calculate the potentials for each charge.\
+    \\end\{enumerate\}\
+    \\item After completing this loop we move onto determining the equivalence classes. This will also be broken down by sub-steps\
+    \\begin\{enumerate\}\
+        \\item Compute the dij matrix storing the distances from each charge. Upon completing the distance calculations for each row sort that row (ascending).\
+        \\item Iterate through dij to calculate the equivalence classes. The algorithm to compute this implements a nested for loop iterating over the rows and ensuring that it is element-wise < epsec. So we begin with the i-th row and then for that row we compare all j rows to it element-wise. If we classify that the j-th row is in the same equivalence class the index of this group is stored to an array "indices" which stores the set of charges that have already been classified so we do not double count any charges in multiple classes. \
+        \\item For each instance that the j-th row is in the same equivalence class we increment our count and then once we have completed the iterations j = 1 : nc we then store that counter to our v \\textunderscore ec and continue with the next i iteration.\
+        \\item Also note that on these iterations we verify that the i-th charge is not a member of indices otherwise we skip over this charge.\
+        \\item Lastly, we sort v\\textunderscore ec descending\
+    \\end\{enumerate\}\
+    \\item Having completed the charges function we then do what is required with these results whether it be plot or store or manipulate these data to analyze our goals (convergence, potential, equivalence class comparisons, etc.).\
+\\end\{enumerate\}\
+\
+\\section\{Numerical Experiments and Results\}\
+\\subsection\{4 Level Convergence Test\}\
+\\\\\
+The purpose of this 4 level convergence test is to analyze the convergence of our FDA. To do this we computed a sequence of calculations for $n_c = 4, tmax = 10, gamma = 1, epsec = 1.0e-5$. Our initial conditions were fixed (non-random) and were: $r0 = [[1,0,0];[0,1,0];[0,0,1]; sqrt(3)/3 * [1,1,1,]]$ and lastly at levels 10 through 13.\
+\\\\\
+Executing these calculations at the different levels we then focused on specifically the x coordinate of the first charge over the simulation and compared the results by taking the differences of these solutions. To do this we did\
+\\begin\{align*\}\
+    \\delta x_\{10\} = x_\{11\} - x\{10\}\\\\\
+    \\delta x_\{11\} = x_\{12\} - x\{11\}\\\\\
+    \\delta x_\{12\} = x_\{13\} - x\{12\}\
+\\end\{align*\}\
+Having computed these we also needed to convert the time-series of $x_\{11\}$, $x_\{12\}$ and $x_\{13\}$ accordingly as they were different length arrays since their number of grid points was $2^\{1\}$, $2^\{2\}$, $2^\{3\}$ respectively when compared to $x_\{10\}$ . This is displayed in the code as well under convtest.m. Lastly to visualize the convergence of these we plot $\\delta x_\{10\}$, $\\rho \\delta x_\{11\}$, $\\rho^2 \\delta x_\{12\}$ as a function of t. Then given near coincidence for either of these plots then we can help understand our FDA's order of accuracy. In our case for the plots below we see that near coincidence appears when rho = 2 meaning that the FDA is first-order accurate.\
+\\begin\{figure\}[!h]\
+    \\centering\
+    \\includegraphics[width=10cm, height=7.5cm]\{4LevelConvergence_rho2.png\}\
+\\end\{figure\}\
+\\begin\{figure\}[!h]\
+    \\centering\
+    \\includegraphics[width=10cm, height=7.5cm]\{4LevelConvergence_rho4.png\}\
+\\end\{figure\}\\\\\
+From this we understand that this makes sense as our FDAs were computed to be 2nd order accurate as shown in the earlier derivations of both the first derivative FDA and second derivative FDA. However, this refers to our step error and thus it makes sense that our global error is 1st order accurate which is what is being plotted.\\\\\
+\\\\\
+Looking at the convergence test when $\\rho = 4$ then we see that the FDA is not converging (not near coincidence). The reason convergence is associated with near convergence for these is that by multiplying the series by the order of accuracy then we should be returned very similar plots. To summarize from these plots it is determined that the global error of our simulations are first order accurate which makes sense when reviewing this in conjunction with the FDA derivations as the step errors are first order.\\\\\
+\
+\\subsection\{Time evolution of potential for 12-charge calculation\}\
+The next section is performing the simulation for the following parameters:\
+\\begin\{itemize\}\
+    \\item nc = 12\
+    \\item tmax = 10\
+    \\item level = 12\
+    \\item gamma = 1\
+    \\item epsec = 1.0e-5\
+\\end\{itemize\}\
+\\begin\{figure\}[!h]\
+    \\centering\
+    \\includegraphics[width=10cm, height=8cm]\{PlotV.png\}\
+\\end\{figure\}\\\\\
+Given these parameters we see the potential reach an approximate equilibrium within a short span of time as tmax is small. While difficult to take away from this graph the potential of the 12 charge configuration in our simulation tends to roughly 49.2. For increased precision in this actual value it would likely require an increase in tmax since tmax being 10 gives the charge a small amount of time to settle into the exact equilibrium when compared to the Thomson problem Wikipedia page.\\\\\
+\\\\\
+\\subsection\{Survey of V (tmax; N) and vec(N) for various values of N\}\
+Another set of calculations ran was simulating the results with 2 charges through to 60 charges inclusive. In this instance we used the following parameters:\\\\\
+\\begin\{itemize\}\
+    \\item nc = 2: 60 \
+    \\item tmax = 3000\
+    \\item level = 17\
+    \\item gamma = 10\
+    \\item epsec = 1.0e-5\
+\\end\{itemize\}\\\\\
+At the bottom of the assignment submission pdf the results are included in tabular form. Out of the 59 simulations 49 of them were completely precise with the results on the Thomson problem Wikipedia page. The instances that were not to 10 digits precise were when the number of charges was: 11, 36, 37, 38, 53, 55, 56, 58, 59, 60.\
+\\\\\
+Of these errors there were a few interesting takeaways to be had. Firstly, after many simulations of different configurations testing 11 charges it appeared that the convergence of our solution was uniquely different than the Thomson problem Wikipedia page. Having compared with other classmates we noticed that our solution converged to a slightly different number.\\\\\
+\\\\\
+Secondly, in the range of 36 to 38 it was consistently seen across different levels and tmax values that it was a "problem" area. Noting this, the error on 36 when compared to the Wikipedia page was normally very small ($1.7*10^\{-9\}$). However the errors on 37 and 38 were of magnitude in the hundredths which was more notable. This was also the case for a variety of simulations where different level and tmax values were tested.\\\\\
+\\\\\
+Lastly, the charges in the 50s that were less than 10 digits precise were roughly 7 digits precise. So while not exact they were still roughly accurate as we would expect. Possible reasons for this being such could be that given the large number of charges and since they were all randomized that the configurations at equilibrium might be some variations of local and global minima that are not synchronous with the standard values from Wikipedia. For example I found that when calculating for nc = 60 that sometimes the result would meet 10 digit precision however it was not reliable for that type of precision.\\\\\
+\\\\\
+For reference, another version of the survey is included in the zip folder for level = 15 and tmax = 300. Here there were 18 cases where the results were less than 10 digits precise. Obviously, increasing the level would lead to more precise results but for the cases that were incorrect here that were less than 30 charges the tmax was likely the limiting factor after executing more computations to substantiate this theory.\\\\\
+\\\\\
+With regards to the equivalence classes analyzing them was a little less clear. One interesting thing to note was that when the number of charges was 55, 56, 58, and 59; which were all not simulated precisely that the results were n individual classes where n is the number of charges. Additionally when reading into the cases with odd numbers of charges you can identify that there are frequently charges of their own individual classes. While this is inherent in that there is an odd number of charges there were also some cases where the "extra" charge was still a part of some other class in which our smallest class consistent of three charges. Intuitively there were also some cases where I would have expected more or less equivalent geometry which was not the case. \\\\\
+\\\\\
+One thing to note was that generally speaking when the number of charges was divisible by three that the equivalence classes of these configurations contained less classes then numbers of charges that were not divisible by 3. Additionally, when n was divisible by 4 then we also had relatively geometric equilibrium's. Beyond this concrete observations and patterns were difficult to interpret. The meaning behind these results likely lies in the complicated geometry of the charges on the sphere.\\\\\
+\
+\\subsection\{Video of sample evolution\}\
+Lastly, when it comes to the sample evolution I created a short video simulating 24 charges at a random initial configuration. We can see that within roughly 225 time-steps. To ensure complete accuracy of this result while maintaining a suitable output video time and a reasonable program run-time as well, I used the following parameters when executing the simulation:\
+\\begin\{itemize\}\
+    \\item nc = 24\
+    \\item tmax = 200\
+    \\item level = 12\
+    \\item gamma = 10\
+    \\item epsec = 1.0e-5\
+\\end\{itemize\}\
+\
+\\section\{Conclusions\}\
+This project applied finite difference methods to simulate charge behaviour along a unit sphere to understand its equilibrium states. Aspects of this equilibrium included the systems total potential, equivalence classes, and the equilibrium positions. Implementing two second order accurate FDAs approximating our first and second derivatives yielded a global error of 1st order accuracy as we expected and this was shown in our four level convergence test in section 5.1. The solution was shown to be quite accurate for most of different numbers of charges barring a few exceptions when comparing the systems total potential at equilibrium. Reasoning for this inconsistency at higher numbers of charges likely lie in the solution determining local versus global minima. Moreover, the project applied FDAs to a computationally interesting problem and proved to be generally successful and efficient in providing suitable solutions.\
+\\pagebreak\
+\
+\\section\{Survey Tables (Potential and Equivalence Classes\}\
+\\\\\
+% \\begin\{flushleft\}\
+%     \\begin\{table\}[h!]\
+%     \\begin\{tabular\}\{ c l \}\
+%         Number of Charges & Calculated Potential\\\\\
+%           2 &    0.5000000000\\\\\
+%           3 &    1.7320508076\\\\\
+%           4 &    3.6742346142\\\\\
+%           5 &    6.4746914947\\\\\
+%           6 &    9.9852813742\\\\\
+%           7 &   14.4529774142\\\\\
+%           8 &   19.6752878612\\\\\
+%           9 &   25.7599865313\\\\\
+%          10 &   32.7169494601\\\\\
+%          11 &   40.5964505082\\\\\
+%          12 &   49.1652530576\\\\\
+%          13 &   58.8532306117\\\\\
+%          14 &   69.3063632966\\\\\
+%          15 &   80.6702441143\\\\\
+%          16 &   92.9116553025\\\\\
+%          17 &  106.0504048286\\\\\
+%          18 &  120.0844674475\\\\\
+%          19 &  135.0894675567\\\\\
+%          20 &  150.8815683338\\\\\
+%          21 &  167.6416223993\\\\\
+%          22 &  185.2875361493\\\\\
+%          23 &  203.9301906629\\\\\
+%          24 &  223.3470740518\\\\\
+%          25 &  243.8127602988\\\\\
+%          26 &  265.1333263174\\\\\
+%          27 &  287.3026150330\\\\\
+%          28 &  310.4915423582\\\\\
+%          29 &  334.6344399204\\\\\
+%          30 &  359.6039459038\\\\\
+%          31 &  385.5308380633\\\\\
+%          32 &  412.2612746505\\\\\
+%          33 &  440.2040574476\\\\\
+%          34 &  468.9048532813\\\\\
+%          35 &  498.5698724906\\\\\
+%          36 &  529.1224083767\\\\\
+%          37 &  560.6279730566\\\\\
+%          38 &  593.0489435380\\\\\
+%          39 &  626.3890090168\\\\\
+%          40 &  660.6752788346\\\\\
+%          41 &  695.9167443419\\\\\
+%          42 &  732.0781075437\\\\\
+%          43 &  769.1908464592\\\\\
+%          44 &  807.1742630846\\\\\
+%          45 &  846.1884010611\\\\\
+%          46 &  886.1671136392\\\\\
+%          47 &  927.0592706797\\\\\
+%          48 &  968.7134553438\\\\\
+%          49 & 1011.5571826536\\\\\
+%          50 & 1055.1823147263\\\\\
+%          51 & 1099.8192903189\\\\\
+%          52 & 1145.4189643193\\\\\
+%          53 & 1191.9315847093\\\\\
+%          54 & 1239.3614747292\\\\\
+%          55 & 1287.7890572384\\\\\
+%          56 & 1337.0987274148\\\\\
+%          57 & 1387.3832292528\\\\\
+%          58 & 1438.6381050033\\\\\
+%          59 & 1490.7743860781\\\\\
+%          60 & 1543.8350995985\\\\\
+%     \\end\{tabular\}\
+%     \\end\{table\}\\\\\
+% \\end\{flushleft\}\
+\\begin\{figure\}[!h]\
+    \\centering\
+    \\includegraphics[width=7cm, height=20.5cm]\{potentia_tabel.png\}\
+\\end\{figure\}\
+\\begin\{figure\}[!h]\
+    \\centering\
+    \\includegraphics[width=17cm, height=20.5cm]\{EquivalenceClass.png\}\
+\\end\{figure\}\
+% \\begin\{flushleft\}\
+%     \\begin\{table\}[h!]\
+%     \\begin\{tabular\}\{ c l \}\
+%     Nc & Equivalence Classes\\\\\
+%       2 & 2 \\\\\
+%       3 & 3 \\\\\
+%       4 & 4 \\\\\
+%       5 & 3 2 \\\\\
+%       6 & 6 \\\\\
+%       7 & 5 2 \\\\\
+%       8 & 8 \\\\\
+%       9 & 6 3 \\\\\
+%      10 & 8 2 \\\\\
+%      11 & 4 2 2 2 1\\\\ \
+%      12 & 12 \\\\\
+%      13 & 4 2 2 2 2 1 \\\\\
+%      14 & 12 2 \\\\\
+%      15 & 6 6 3 \\\\\
+%      16 & 12 4 \\\\\
+%      17 & 10 5 2 \\\\\
+%      18 & 8 8 2 \\\\\
+%      19 & 4 4 4 2 2 2 1 \\\\\
+%      20 & 6 6 6 2 \\\\\
+%      21 & 4 4 2 2 2 2 2 2 1 \\\\\
+%      22 & 12 6 4 \\\\\
+%      23 & 6 6 6 3 2\\\\ \
+%      24 & 24 \\\\\
+%      25 & 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 \\\\\
+%      26 & 2 2 2 2 2 2 2 2 2 2 2 2 2 \\\\\
+%      27 & 10 10 5 2 \\\\\
+%      28 & 12 12 4 \\\\\
+%      29 & 6 6 6 6 3 2 \\\\\
+%      30 & 4 4 4 4 4 4 4 2 \\\\\
+%      31 & 6 6 3 3 3 3 3 3 1 \\\\\
+%      32 & 20 12 \\\\\
+%      33 & 2 2 2 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 \\\\\
+%      34 & 4 4 4 4 4 4 4 4 2 \\\\\
+%      35 & 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 \\\\\
+%      36 & 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 \\\\\
+%      37 & 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 \\\\\
+%      38 & 4 4 4 4 4 4 2 2 2 2 2 2 2 \\\\\
+%      39 & 12 6 6 6 6 3 \\\\\
+%      40 & 12 12 12 4 \\\\\
+%      41 & 12 6 6 6 6 3 2 \\\\\
+%      42 & 10 10 10 10 2 \\\\\
+%      43 & 4 4 4 4 4 4 4 2 2 2 2 2 2 2 1 \\\\\
+%      44 & 24 12 8 \\\\\
+%      45 & 6 6 6 6 6 6 6 3 \\\\\
+%      46 & 12 12 12 6 4 \\\\\
+%      47 & 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 \\\\\
+%      48 & 24 24 \\\\\
+%      49 & 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 1 \\\\\
+%      50 & 12 12 12 12 2 \\\\\
+%      51 & 6 6 6 6 6 6 6 6 3\\\\ \
+%      52 & 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 1 \\\\\
+%      53 & 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 \\\\\
+%      54 & 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 \\\\\
+%      55 & 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 \\\\\
+%      56 & 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 \\\\\
+%      57 & 6 6 6 6 6 6 6 6 6 3 \\\\\
+%      58 & 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 \\\\\
+%      59 & 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 \\\\\
+%      60 & 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 \\\\\
+    \
+%     \\end\{tabular\}\
+%     \\end\{table\}\\\\\
+% \\end\{flushleft\}\
+\\end\{document\}}

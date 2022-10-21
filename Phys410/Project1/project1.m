@@ -1,8 +1,8 @@
 format long
 tic
-nc = 12;
+nc = 54;
 tmax = 10000;
-level = 10;
+level = 15;
 gamma = 1;
 epsec = 10^-5;
 
@@ -20,10 +20,13 @@ end
 % v19_wiki = 135.089467557;
 % v21_wiki = 167.641622399;
 % v25_wiki = 243.812760299;
-% v30_wiki = 359.603945904;
+% v36_wiki = 529.122408375
+% abs(v(end) - v36_wiki)
 % v44_wiki = 807.174263085;
-% v54_wiki = 1239.361474729;
+v54_wiki = 1239.361474729;
 % checks = [];
+v(end)
+abs(v(end) - v54_wiki)
 
 % for i = 1:1
 %     [t, r, v, v_ec] = charges(r0, tmax, level, gamma, epsec);

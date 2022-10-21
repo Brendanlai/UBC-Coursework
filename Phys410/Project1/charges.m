@@ -39,26 +39,16 @@ function [t, r, v, v_ec] = charges(r0, tmax, level, gamma, epsec)
     for ts = 2: nt - 1
 
         summation = zeros(nc, 3);        
-        % Summation calculation SUM(SUM (rij / rij^3)
-        % Old summation thing WORKS
-%         for i = 1: nc
-%             for j = 1: nc
-%                 if i == j
-%                     continue
-%                 end
-%                 rij = r(j,:,ts) - r(i,:,ts);
-%                 summation(i,:) = summation(i,:) + rij / norm(rij)^3;
-%     
-%             end
-%         end
-% END WORKS
+        % Summation calculation SUM(SUM (rij / rij^3))
         for i = 1: nc
             ri = r(i, :, ts);
-            rjMatrix = r(:, :, ts);
+            rjMatrix = r(:, :, ts); 
             rjMatrix(i, :) = [];
 
-            rij = rjMatrix - ri;
-            rijCubed = vecnorm(rij, 2, 2).^3;
+            rij = rjMatrix - ri; 
+
+            % using vecnorm computes 2 norm of each row
+            rijCubed = vecnorm(rij, 2, 2).^3; 
             rij = rij ./ rijCubed;
             summation(i,:) = sum(rij);
         end
@@ -78,7 +68,6 @@ function [t, r, v, v_ec] = charges(r0, tmax, level, gamma, epsec)
 
         % Calculating potentials
         v(ts + 1) = Potential(r, nc, ts + 1);
-        
     end
 
     % Equivalence Class Start
@@ -93,7 +82,7 @@ function [t, r, v, v_ec] = charges(r0, tmax, level, gamma, epsec)
         dij(i,:) = sort(dij(i,:));
     end
 
-    % computing the equivalence classes
+    % Computing the equivalence classes
     count = 1; % counting instances of equivalence class
     index = 1;  % v_ec index pointer
     v_ec = [];
