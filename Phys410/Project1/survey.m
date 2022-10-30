@@ -13,7 +13,7 @@ ecsurvey = fopen('ecsurvey.dat','w');
 
 % loop for survey ncharges 2 to 60 
 for nc = 2 : 60
-    % Initialize r0 and normalize it
+    % Initialize r0 and normalize
     r0 = 2 * rand(nc,3) - 1; 
     for j = 1: nc
         r0(j, :) = r0(j, :) / norm(r0(j, :));

@@ -25,11 +25,12 @@ x11_2 = r11(1:2:end);
 x12_4 = r12(1:4:end);
 x13_8 = r13(1:8:end);
 
+
 dx10 = (x11_2 - r10);
 dx11 = (x12_4 - x11_2);
 dx12 = (x13_8 - x12_4);
 
-rho = 2; % Modify rho for the two different plots (rho = 2 or 4
+rho = 2; % Modify rho for the two different plots (rho = 2 or 4)
 
 hold on 
 plot(t10, (dx10)', '-r')
