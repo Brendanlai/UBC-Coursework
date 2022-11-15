@@ -57,7 +57,7 @@ function [tout, yout] = rk4ad(fcn, tspan, reltol, y0)
         end
 
         % add values for the next tspan having met error criterion
-        yout = [yout, y_f2];
+        yout = [yout, y_temp];
         t_index = t_index + 1;
     end
 
