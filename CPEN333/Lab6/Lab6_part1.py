@@ -53,7 +53,7 @@ def philosopher(id: int, chopstick: list, chopsticksList: list):
 
                 thinkForAWhile()
 
-                hasEaten = True # Exit the while loop now that the philospher has eaten in this iteration
+                hasEaten = True # Exit the while loop now that the philosopher has eaten in this iteration
 
             # if the left chopstick was acquired release it
             elif leftAcquirable:
