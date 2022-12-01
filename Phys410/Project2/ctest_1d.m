@@ -1,6 +1,6 @@
 format long
 
-convTest1 = true; % set to true or false depending on which test case
+convTest1 = false; % set to true or false depending on which test case
 
 % Set up parameters for convergence test 1
 idtype = 0;
@@ -54,7 +54,7 @@ plot(t6, l2norm_psi_3 * 4^2)
 
 % if convTest1 plot exact solutions
 if convTest1
-    exact_psi = dim1_exact_soln(m, x6, t6);
+    exact_psi = sch1d_exact_soln(m, x6, t6);
     
     dpsi_1_exact = exact_psi - psi7_l6;
     dpsi_2_exact = exact_psi - psi8_l6;
