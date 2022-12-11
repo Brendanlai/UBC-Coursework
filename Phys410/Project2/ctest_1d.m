@@ -73,4 +73,3 @@ if convTest1
     plot(t6, real(l2norm_psi_2_exact) * 4)
     plot(t6, real(l2norm_psi_3_exact) * 4^2)
 end
-% for l = l_min : l_max

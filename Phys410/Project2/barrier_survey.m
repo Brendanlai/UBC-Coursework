@@ -1,6 +1,8 @@
 format long
 
 tic
+
+% Set parameters for barrier survey
 tmax = 0.1;
 level = 9.0;
 lambda = 0.01;
@@ -10,7 +12,6 @@ vtype = 1; % Rectangular Barrier
 x1 = 0.8;
 x2 = 1.0;
 
-% [x, t, psi, psire, psiim, psimod, prob, v] = sch_1d_cn(tmax, level, lambda, idtype, idpar, vtype, vpar);
 lnV0 = linspace(-2, 5, 251);
 Fe = zeros(1, 251);
 V0 = exp(lnV0);

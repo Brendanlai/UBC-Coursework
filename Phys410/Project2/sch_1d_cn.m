@@ -30,7 +30,6 @@ function [x, t, psi, psire, psiim, psimod, prob, v] = ...
    if idtype == 0
       m = idpar(1);
       psi(1, :) = sin(m * pi * x);
-
       % Boundary conditions already set to zero 
 
    elseif idtype == 1
@@ -82,8 +81,6 @@ function [x, t, psi, psire, psiim, psimod, prob, v] = ...
 
    % Define sparse matrix 
    A = spdiags([dl d du], -1:1, nx, nx);
-   size(A)
-   size(d)
 
    % Compute solution using implicit scheme 
    for n = 1: nt - 1
@@ -111,5 +108,4 @@ function [x, t, psi, psire, psiim, psimod, prob, v] = ...
    for i = 2: nx
        prob(:, i) = prob(:, i-1) + 1/2*(psi(:,i).*conj(psi(:,i)) + psi(:,i-1).*conj(psi(:,i-1)))*(x(i) - x(i-1));
    end
-
 end
